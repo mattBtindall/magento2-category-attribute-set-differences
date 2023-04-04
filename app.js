@@ -32,3 +32,16 @@ function getWithFilter(endpoint, filters) {
     })
 }
 
+/**
+ * gets all attribute codes of an attribute set
+ * @param {Number} attributeSetId - the id of the attribute set
+ * @returns {Promise} - argument contains attribute codes
+ */
+async function getAttributesFromSet(attributeSetId) {
+    const attributeCodes = []
+    const attributeSetAttributes = await admin.get(`products/attribute-sets/${attributeSetId}/attributes`)
+    attributeSetAttributes.forEach(attribute => attributeCodes.push(attribute.attribute_code))
+    return attributeCodes
+}
+// getAttributesFromSet(41)
+//     .then(data => console.log(data));
