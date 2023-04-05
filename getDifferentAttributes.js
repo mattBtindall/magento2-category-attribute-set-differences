@@ -22,6 +22,19 @@ function getWithFilter(endpoint, filters) {
 }
 
 /**
+ * gets the attrbiute set group id from name
+ * @param {Number} attribueSetId - attribute set id
+ * @param {String} groupName - name of group e.g. 'General'
+ * @returns {Promise} - containing {Number} id of group
+ */
+async function getAttributeSetGroupId(attribueSetId, groupName) {
+    const groups = await getWithFilter('products/attribute-sets/groups/list', [
+        {'field': 'attribute_set_id', 'value': attribueSetId, 'condition_type': 'eq'}
+    ])
+    return groups.items.filter(group => group.attribute_group_name === groupName)[0].attribute_group_id
+}
+
+/**
  * gets all attribute codes of an attribute set
  * @param {Number} attributeSetId - the id of the attribute set
  * @returns {Promise} - argument contains attribute codes
@@ -66,4 +79,7 @@ async function getDifferentAttributeCodes(attribueSetId, categoryId) {
     return categoryAttributeCodes.filter(attributeCode => !attributeSetCodes.includes(attributeCode))
 }
 
-module.exports = getDifferentAttributeCodes;
+module.exports = {
+    getDifferentAttributeCodes,
+    getAttributeSetGroupId
+}
