@@ -8,10 +8,8 @@ const { getWithFilter } = require('./helpers/getHelpers')
  * @returns {Promise} - argument contains attribute codes
  */
 async function getAttributesFromSet(attributeSetId) {
-    const attributeCodes = []
     const attributeSetAttributes = await admin.get(`products/attribute-sets/${attributeSetId}/attributes`)
-    attributeSetAttributes.forEach(attribute => attributeCodes.push(attribute.attribute_code))
-    return attributeCodes
+    return attributeSetAttributes.map(attribute => attribute.attribute_code)
 }
 
 /**
