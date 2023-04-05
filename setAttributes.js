@@ -1,7 +1,5 @@
 const admin = require('./global');
-const { getAttributeSetGroupId } = require('./getDifferentAttributes')
-
-
+const { getAttributeSetGroupId } = require('./helpers/getHelpers')
 
 admin.put('products/attribute-sets/attributes', {
     params: {
