@@ -21,6 +21,18 @@ function getWithFilter(endpoint, filters) {
 }
 
 /**
+ * gets the attribute set id by name
+ * @param {String} attributeSetName - name of attribute set
+ * @returns {Number} attribute set id
+ */
+async function getAttributeSetId(attributeSetName) {
+    const attributeSet = await getWithFilter('products/attribute-sets/sets/list', [
+        {'field': 'attribute_set_name', 'value': attributeSetName, 'condition_type': 'eq'}
+    ])
+    return attributeSet.items[0].attribute_set_id
+}
+
+/**
  * gets the attrbiute set group id from name
  * @param {Number} attribueSetId - attribute set id
  * @param {String} groupName - name of group e.g. 'General'
@@ -35,5 +47,6 @@ async function getAttributeSetGroupId(attribueSetId, groupName) {
 
 module.exports = {
     getWithFilter,
-    getAttributeSetGroupId
+    getAttributeSetGroupId,
+    getAttributeSetId
 }
