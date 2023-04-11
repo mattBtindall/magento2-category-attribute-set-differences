@@ -45,8 +45,20 @@ async function getAttributeSetGroupId(attribueSetId, groupName) {
     return groups.items.filter(group => group.attribute_group_name === groupName)[0].attribute_group_id
 }
 
+/**
+ * get the specified categories id
+ * @param {String} categoryName - category name
+ * @returns {Number} category id
+ */
+async function getCategoryId(categoryName) {
+    return getWithFilter('categories/list', [
+        {'field': 'name', 'value': categoryName, 'condition_type': 'eq'}
+    ])
+}
+
 module.exports = {
     getWithFilter,
     getAttributeSetGroupId,
-    getAttributeSetId
+    getAttributeSetId,
+    getCategoryId
 }
