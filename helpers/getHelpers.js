@@ -51,9 +51,11 @@ async function getAttributeSetGroupId(attribueSetId, groupName) {
  * @returns {Number} category id
  */
 async function getCategoryId(categoryName) {
-    return getWithFilter('categories/list', [
+    const categories = await getWithFilter('categories/list', [
         {'field': 'name', 'value': categoryName, 'condition_type': 'eq'}
     ])
+    // match the name exactly as similarly named categories are returned
+    return categories.items.filter(category => category.name === categoryName)[0].id
 }
 
 module.exports = {
