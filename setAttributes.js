@@ -1,4 +1,4 @@
-const admin = require('./global');
+const { admin } = require('./global');
 
 /**
  *
@@ -28,11 +28,17 @@ async function addAttributesToSet(attributeSetId, attributeGroupId, attributeCod
  * @returns {Array} updated product
  */
 async function updateProductAttributeSet(sku, attributeSetId) {
-    return admin.put(`products/${sku}`, {
+    const data = {
         "product" : {
-            "attribute_set_id": attributeSetId
+            "attribute_set_id": attributeSetId,
+            "sku": sku
         }
-    })
+    },
+    config = {
+        "storeCode": "all"
+    }
+
+    return admin.put(`products/${sku}`, data, config)
 }
 
 module.exports = {
