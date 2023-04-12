@@ -14,7 +14,7 @@ async function getAttributesFromSet(attributeSetId) {
 
 /**
  * gets attribute codes from products that are part of the importAll attribute set from the specified category
- * @param {*} categoryId - magento category id
+ * @param {Number} categoryId - magento category id
  * @returns {Promise} - containing array of attribute codes
  */
 async function getAttributeCodesFromProducts(categoryId) {
@@ -25,8 +25,7 @@ async function getAttributeCodesFromProducts(categoryId) {
     ])
 
     for (const product of products.items) {
-        const attributes = await getWithFilter(`products/${product.sku}`)
-        attributes.custom_attributes.forEach(attribute => {
+        product.custom_attributes.forEach(attribute => {
             if (!attributeCodes.includes(attribute.attribute_code)) attributeCodes.push(attribute.attribute_code);
         })
     }
