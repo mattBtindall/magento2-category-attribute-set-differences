@@ -21,6 +21,21 @@ async function addAttributesToSet(attributeSetId, attributeGroupId, attributeCod
     return attributeIds
 }
 
+/**
+ * update a products attribute set
+ * @param {String} sku - a products sku
+ * @param {Number} attributeSetId - attribute set id
+ * @returns {Array} updated product
+ */
+async function updateProductAttributeSet(sku, attributeSetId) {
+    return admin.put(`products/${sku}`, {
+        "product" : {
+            "attribute_set_id": attributeSetId
+        }
+    })
+}
+
 module.exports = {
-    addAttributesToSet
+    addAttributesToSet,
+    updateProductAttributeSet
 }
