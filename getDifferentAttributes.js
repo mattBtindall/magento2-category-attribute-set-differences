@@ -1,5 +1,4 @@
-const admin = require('./global')
-const IMPORT_ALL_ID = 31
+const { admin, IMPORT_ALL_ID } = require('./global')
 const { getWithFilter, getCategoryImportAllProducts } = require('./helpers/getHelpers')
 
 /**

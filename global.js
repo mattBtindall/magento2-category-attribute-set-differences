@@ -1,6 +1,7 @@
 const https = require('https')
 const keys = require('./keys')
 const Magento2Api = require('magento2-api-wrapper')
+const IMPORT_ALL_ID = 31
 
 const admin = new Magento2Api({
     api: {
@@ -17,4 +18,7 @@ const admin = new Magento2Api({
     }
 })
 
-module.exports = admin
+module.exports = {
+    admin,
+    IMPORT_ALL_ID
+}

@@ -1,4 +1,4 @@
-const admin = require('../global')
+const { admin } = require('../global')
 
 /**
  * simple wrapper around the magento2api get method
