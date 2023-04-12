@@ -1,6 +1,6 @@
-const IMPORT_ALL_ID = 31
 const admin = require('./global')
-const { getWithFilter } = require('./helpers/getHelpers')
+const IMPORT_ALL_ID = 31
+const { getWithFilter, getCategoryImportAllProducts } = require('./helpers/getHelpers')
 
 /**
  * gets all attribute codes of an attribute set
@@ -18,13 +18,10 @@ async function getAttributesFromSet(attributeSetId) {
  * @returns {Promise} - containing array of attribute codes
  */
 async function getAttributeCodesFromProducts(categoryId) {
-    const attributeCodes = [];
-    const products = await getWithFilter('products', [
-        { 'field': 'attribute_set_id', 'value': IMPORT_ALL_ID, 'condition_type': 'eq' },
-        { 'field': 'category_id', 'value':  categoryId, 'condition_type': 'eq'}
-    ])
+    const attributeCodes = []
+    const products = await getCategoryImportAllProducts(categoryId, IMPORT_ALL_ID)
 
-    for (const product of products.items) {
+    for (const product of products) {
         product.custom_attributes.forEach(attribute => {
             if (!attributeCodes.includes(attribute.attribute_code)) attributeCodes.push(attribute.attribute_code);
         })

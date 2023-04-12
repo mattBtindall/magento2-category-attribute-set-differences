@@ -58,9 +58,24 @@ async function getCategoryId(categoryName) {
     return categories.items.filter(category => category.name === categoryName)[0].id
 }
 
+/**
+ * get all the products from the specified category that are in the import all attribute set
+ * @param {Number} categoryId - category id
+ * @param {Number} importAllId - import all attribute set id
+ * @returns {Array} products
+ */
+async function getCategoryImportAllProducts(categoryId, importAllId) {
+    const products = await getWithFilter('products', [
+        { 'field': 'attribute_set_id', 'value': importAllId, 'condition_type': 'eq' },
+        { 'field': 'category_id', 'value':  categoryId, 'condition_type': 'eq'}
+    ])
+    return products.items
+}
+
 module.exports = {
     getWithFilter,
     getAttributeSetGroupId,
     getAttributeSetId,
-    getCategoryId
+    getCategoryId,
+    getCategoryImportAllProducts
 }
