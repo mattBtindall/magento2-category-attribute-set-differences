@@ -22,24 +22,38 @@ async function addAttributesToSet(attributeSetId, attributeGroupId, attributeCod
 }
 
 /**
+ * simple wrapper around the 'products/{sku}' endpoint
+ * @param {Object} updates - attributes to update
+ * @param {String} sku - product sku
+ * @returns {Object} magento product
+ */
+async function updateProduct(sku, updates) {
+    if (!updates.hasOwnProperty('sku')) { // sku is require with this endpoint
+        updates.sku = sku
+    }
+
+    const data = {
+        "product" : updates
+    },
+    config = {
+        "storeCode": "all"
+    }
+
+    return admin.put(`products/${encodeURIComponent(sku)}`, data, config)
+}
+
+/**
  * update a products attribute set
  * @param {String} sku - a products sku
  * @param {Number} attributeSetId - attribute set id
  * @returns {Array} updated product
  */
 async function updateProductAttributeSet(sku, attributeSetId) {
-    const data = {
-        "product" : {
-            "attribute_set_id": attributeSetId,
-            "sku": sku
-        }
-    },
-    config = {
-        "storeCode": "all"
-    }
-
-    return admin.put(`products/${sku}`, data, config)
+    return updateProduct(sku, {
+        "attribute_set_id": attributeSetId,
+    })
 }
+
 
 module.exports = {
     addAttributesToSet,
