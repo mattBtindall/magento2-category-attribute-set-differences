@@ -54,8 +54,27 @@ async function updateProductAttributeSet(sku, attributeSetId) {
     })
 }
 
+/**
+ * removes attributes from product
+ * @param {String} sku - product sku
+ * @param {Array.<String>} attributeCodes - attribute codes to remove from product
+ * @returns {Object} magento product
+ */
+async function removeAttributes(sku, attributeCodes) {
+    customAttributes = attributeCodes.map(attribute => {
+        return {
+            "attribute_code": attribute,
+            "value": null
+        }
+    })
+
+    return updateProduct(sku, {
+        "custom_attributes": customAttributes
+    })
+}
 
 module.exports = {
     addAttributesToSet,
-    updateProductAttributeSet
+    updateProductAttributeSet,
+    removeAttributes
 }
