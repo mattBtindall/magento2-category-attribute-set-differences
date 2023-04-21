@@ -1,5 +1,5 @@
 const { admin, attributeSetIds } = require('../global')
-const { getAttributeCodesFromProducts } = require('./getHelpers')
+const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId } = require('./getHelpers')
 
 /**
  *
@@ -73,6 +73,47 @@ async function removeAttributes(sku, attributeCodes) {
         "custom_attributes": customAttributes
     })
 }
+
+//
+/**
+ * creates a new attribute set based on products from importAll attribute set from specified category
+ * @param {String} name - name of the new attribute set
+ * @param {String|Number} category - either the name of category or the category id
+ * @param {String|Number} attributeGroup - either the name of group or the group id
+ * @param {Number} importAllId - import all attribute set id
+ * @param {Number} defaultAttributeSet - default attribute set id
+ * @returns {Error|Number} throws error if attribute set cannot be create or attribute set id
+ */
+async function createNewAttributeSet(name, category, attributeGroup, importAllId, defaultAttributeSet) {
+    const { attribute_set_id: attributeSetId } = await admin.post('products/attribute-sets', {
+        'attributeSet': {
+            'attribute_set_name': name,
+            'sort_order': 0
+        },
+        'skeletonId': defaultAttributeSet
+    })
+
+    if (!attributeSetId) {
+        return new Error('Failed to create attribute set')
+    }
+
+    const receipt = []
+    const categoryId = typeof category === 'string' ? await getCategoryId(category) : category
+    const attributeGroupId = typeof attributeGroup === 'string' ? await getAttributeSetGroupId(attributeSetId, attributeGroup) : attributeGroup
+    const attrbiuteCodes = await getAttributeCodesFromProducts(categoryId, importAllId)
+
+    for (const code of attrbiuteCodes) {
+        receipt.push(await admin.post('products/attribute-sets/attributes', {
+            "attributeSetId": attributeSetId,
+            "attributeGroupId": attributeGroupId,
+            "attributeCode":  code,
+            "sortOrder": 0
+        }))
+    }
+    return attributeSetId
+}
+const attributeSetId = await createNewAttributeSet('Infection Control & Social Distancing', 'Infection Control & Social Distancing', 'Attributes', attributeSetIds.importAll, attributeSetIds.default)
+
 
 module.exports = {
     addAttributesToSet,
