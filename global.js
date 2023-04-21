@@ -1,7 +1,13 @@
 const https = require('https')
 const keys = require('./keys')
 const Magento2Api = require('magento2-api-wrapper')
-const IMPORT_ALL_ID = 31
+const attributeSetIds = {
+    importAll: 31,
+    default: 4
+}
+const ATTRIBUTES_TO_REMOVE = [
+    'import_id', 'import_time'
+]
 
 const admin = new Magento2Api({
     api: {
@@ -20,5 +26,6 @@ const admin = new Magento2Api({
 
 module.exports = {
     admin,
-    IMPORT_ALL_ID
+    attributeSetIds,
+    ATTRIBUTES_TO_REMOVE
 }

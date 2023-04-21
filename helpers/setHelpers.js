@@ -1,4 +1,5 @@
-const { admin } = require('./global');
+const { admin, attributeSetIds } = require('../global')
+const { getAttributeCodesFromProducts } = require('./getHelpers')
 
 /**
  *
