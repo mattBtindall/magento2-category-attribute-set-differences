@@ -1,5 +1,5 @@
 const { admin, attributeSetIds } = require('../global')
-const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId } = require('./getHelpers')
+const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId, getCategoryImportAllProducts } = require('./getHelpers')
 
 /**
  *
@@ -55,6 +55,16 @@ async function updateProductAttributeSet(sku, attributeSetId) {
     })
 }
 
+async function updateImportAllProductsAttributeSet(categoryId, importAllId, attributeSetId) {
+    const importAllProducts = await getCategoryImportAllProducts(categoryId, importAllId)
+    const receipt = []
+    for (const product of importAllProducts) {
+        console.log(product.sku)
+        receipt.push(await updateProductAttributeSet(product.sku, attributeSetId))
+    }
+        return receipt
+}
+
 /**
  * removes attributes from product
  * @param {String} sku - product sku
@@ -74,7 +84,6 @@ async function removeAttributes(sku, attributeCodes) {
     })
 }
 
-//
 /**
  * creates a new attribute set based on products from importAll attribute set from specified category
  * @param {String} name - name of the new attribute set
@@ -112,11 +121,11 @@ async function createNewAttributeSet(name, category, attributeGroup, importAllId
     }
     return attributeSetId
 }
-const attributeSetId = await createNewAttributeSet('Infection Control & Social Distancing', 'Infection Control & Social Distancing', 'Attributes', attributeSetIds.importAll, attributeSetIds.default)
-
+// const attributeSetId = await createNewAttributeSet('Infection Control & Social Distancing', 'Infection Control & Social Distancing', 'Attributes', attributeSetIds.importAll, attributeSetIds.default)
 
 module.exports = {
     addAttributesToSet,
     updateProductAttributeSet,
-    removeAttributes
+    removeAttributes,
+    updateImportAllProductsAttributeSet
 }
