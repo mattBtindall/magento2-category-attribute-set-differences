@@ -57,3 +57,45 @@ function compareObjectAttributes(liveProduct, localProduct, attribute) {
         return true
     })
 }
+
+/**
+ * compares two products, placing extra detail on 'custom_attributes'
+ * @param {String} sku - product sku
+ * @returns {String|Array} if no differences - a string contianing the product sku or returns the attributes that are different
+ */
+async function testProduct(sku) {
+    // ignore extension_attributes - these aren't relevant and the ids in here change which isn't an issue, tier_prices includes an extension_attributes property
+    const attributesToIgnore = ['attribute_set_id', 'updated_at', 'custom_attributes', 'extension_attributes', 'tier_prices']
+    const differences = { sku }
+    const encodedSku = encodeURIComponent(sku)
+    const localProduct = await admin.get(`products/${encodedSku}`)
+    const liveProduct = await liveAdmin.get(`products/${(encodedSku)}`)
+
+    differences.attributes = compareAttributes(liveProduct, localProduct, attributesToIgnore)
+    differences.customAttribures = compareObjectAttributes(liveProduct, localProduct, 'custom_attributes')
+    differences.customAttribures = differences.customAttribures.filter(attribute => ATTRIBUTES_TO_REMOVE.includes(attribute))
+    return !differences.attributes.length && !differences.customAttribures.length ? `${sku}: No errors` : differences
+}
+
+/**
+ * randomly tests a number of products
+ * @param {Array.<object>} products - magento products
+ * @returns {Array} differences
+ */
+async function randomTests(products) {
+    const numberOfTests = 10
+    const randomNumbers = []
+    const results = []
+    for (let i = 0; i < numberOfTests; i++) {
+        randomNumbers.push(generateRandomNum(0, products.length))
+    }
+
+    for (const index of randomNumbers) {
+        results.push(await testProduct(products[index].sku))
+    }
+    return results
+}
+
+module.exports = {
+    randomTests
+}
