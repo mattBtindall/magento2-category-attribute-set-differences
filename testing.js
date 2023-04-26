@@ -41,3 +41,19 @@ function compareAttributes(liveProduct, localProduct, attributesToIgnore) {
     }
     return differences
 }
+
+/**
+ * get the differences between attributes that are objects
+ * @param {Object} liveProduct - magento product
+ * @param {Object} localProduct - magento product
+ * @returns {Array.<Object>} objects contain attribute code and value of the missing attribute
+ */
+function compareObjectAttributes(liveProduct, localProduct, attribute) {
+    return liveProduct[attribute].filter(liveAttribute => {
+        for (const localAttribute of localProduct[attribute]) {
+            if (JSON.stringify(liveAttribute) === JSON.stringify(localAttribute))
+                return false
+        }
+        return true
+    })
+}
