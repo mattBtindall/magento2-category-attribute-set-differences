@@ -1,4 +1,4 @@
-const { admin, ATTRIBUTES_TO_REMOVE } = require('../global')
+const { ATTRIBUTES_TO_REMOVE, localAdmin, attributeSetIds } = require('../global')
 
 /**
  * simple wrapper around the magento2api get method
@@ -7,7 +7,7 @@ const { admin, ATTRIBUTES_TO_REMOVE } = require('../global')
  * @returns {Promise} - containing fetched data
  */
 function getWithFilter(endpoint, filters) {
-    return admin.get(endpoint, {
+    return localAdmin.get(endpoint, {
         params: {
             searchCriteria: {
             'filter_groups': [
@@ -26,7 +26,7 @@ function getWithFilter(endpoint, filters) {
  * @returns {Promise} - argument contains attribute codes
  */
 async function getAttributesFromSet(attributeSetId) {
-    const attributeSetAttributes = await admin.get(`products/attribute-sets/${attributeSetId}/attributes`)
+    const attributeSetAttributes = await localAdmin.get(`products/attribute-sets/${attributeSetId}/attributes`)
     return attributeSetAttributes.map(attribute => attribute.attribute_code)
 }
 
@@ -39,7 +39,7 @@ async function getAttributeSetId(attributeSetName) {
     const attributeSet = await getWithFilter('products/attribute-sets/sets/list', [
         {'field': 'attribute_set_name', 'value': attributeSetName, 'condition_type': 'eq'}
     ])
-    return attributeSet.items[0].attribute_set_id
+    return attributeSet.items.length ? attributeSet.items[0].attribute_set_id : null
 }
 
 /**
@@ -69,27 +69,32 @@ async function getCategoryId(categoryName) {
 }
 
 /**
- * get all the products from the specified category that are in the import all attribute set
+ * get all the products from the specified category that are in the specific attribute sets
  * @param {Number} categoryId - category id
- * @param {Number} importAllId - import all attribute set id
+ * @param {Object} attributeSetIds - attribute set ids with name e.g. {default: 4, importAll: 31}
  * @returns {Array} products
  */
-async function getCategoryImportAllProducts(categoryId, importAllId) {
-    const products = await getWithFilter('products', [
-        { 'field': 'attribute_set_id', 'value': importAllId, 'condition_type': 'eq' },
-        { 'field': 'category_id', 'value':  categoryId, 'condition_type': 'eq'}
-    ])
-    return products.items
+async function getCategoryAttributeSetsProducts(categoryId, attributeSetIds) {
+    let allProducts = []
+    for (const attribueSetId of Object.values(attributeSetIds)) {
+        const products = await getWithFilter('products', [
+            { 'field': 'attribute_set_id', 'value': attribueSetId, 'condition_type': 'eq' },
+            { 'field': 'category_id', 'value':  categoryId, 'condition_type': 'eq'}
+        ])
+        allProducts = allProducts.concat(products.items)
+    }
+    return allProducts
 }
 
 /**
- * gets attribute codes from products that are part of the specified (tends to be importAll) attribute set from the specified category
+ * gets attribute codes from products that are part of the specified (tends to be importAll and defualt) attribute set from the specified category
  * @param {Number} categoryId - magento category id
+ * @param {Object} attributeSetIds - attribute set ids with name e.g. {default: 4, importAll: 31}
  * @returns {Promise} - containing array of attribute codes
  */
-async function getAttributeCodesFromProducts(categoryId, importAllId) {
+async function getAttributeCodesFromProducts(categoryId, attribueSetIds) {
     const attributeCodes = []
-    const products = await getCategoryImportAllProducts(categoryId, importAllId)
+    const products = await getCategoryAttributeSetsProducts(categoryId, attribueSetIds)
 
     for (const product of products) {
         product.custom_attributes.forEach(attribute => {
@@ -109,9 +114,10 @@ async function getAttributeCodesFromProducts(categoryId, importAllId) {
  * @param {Number} categoryId - category id
  * @returns {Promise} containing an array of the differing attribute codes
  */
-async function getDifferentAttributeCodes(attribueSetId, categoryId, importAllId) {
+async function getDifferentAttributeCodes(attribueSetId, categoryId, baseAttributeSetIds) {
+    if (!attribueSetId || !categoryId || !baseAttributeSetIds) return
     const attributeSetCodes = await getAttributesFromSet(attribueSetId)
-    const categoryAttributeCodes = await getAttributeCodesFromProducts(categoryId, importAllId)
+    const categoryAttributeCodes = await getAttributeCodesFromProducts(categoryId, baseAttributeSetIds)
     return categoryAttributeCodes.filter(attributeCode => !attributeSetCodes.includes(attributeCode))
 }
 
@@ -120,7 +126,7 @@ module.exports = {
     getAttributeSetGroupId,
     getAttributeSetId,
     getCategoryId,
-    getCategoryImportAllProducts,
+    getCategoryAttributeSetsProducts,
     getAttributeCodesFromProducts,
     getAttributesFromSet,
     getDifferentAttributeCodes
