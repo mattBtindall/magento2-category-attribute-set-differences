@@ -8,14 +8,35 @@ const attributeSetIds = {
 const ATTRIBUTES_TO_REMOVE = [
     'import_id', 'import_time'
 ]
+const generateRandomNumber = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const admin = new Magento2Api({
+/**
+ * generates the specified number of random numbers that are in a range, each number is unique
+ * @param {Number} maxNumber - the maximum any of the random numbers could be e.g. 50 will generate a random number between 0 and 50
+ * @param {Number} length - the number of random numbers
+ * @returns {Array.<number>} the random numbers
+ */
+function generateUniqueRandomNumbers(maxNumber, length) {
+    if (!maxNumber || !length) return
+    if (length > maxNumber) { // length > maxNumber then infinite loop
+        length = maxNumber
+    }
+    const randomNumbers = []
+
+    while (randomNumbers.length !== length) {
+        let randomNumber = generateRandomNumber(maxNumber)
+        if (!randomNumbers.includes(randomNumber)) randomNumbers.push(randomNumber)
+    }
+    return randomNumbers
+}
+
+const localAdmin = new Magento2Api({
     api: {
         url: 'https://localhost',
-        consumerKey: keys.consumerKey,
-        consumerSecret: keys.consumerSecret,
-        accessToken: keys.accessToken,
-        tokenSecret: keys.tokenSecret
+        consumerKey: keys.local.consumerKey,
+        consumerSecret: keys.local.consumerSecret,
+        accessToken: keys.local.accessToken,
+        tokenSecret: keys.local.tokenSecret
     },
     axios: {
         httpsAgent: new https.Agent({
@@ -25,7 +46,8 @@ const admin = new Magento2Api({
 })
 
 module.exports = {
-    admin,
+    localAdmin,
     attributeSetIds,
-    ATTRIBUTES_TO_REMOVE
+    ATTRIBUTES_TO_REMOVE,
+    generateUniqueRandomNumbers
 }

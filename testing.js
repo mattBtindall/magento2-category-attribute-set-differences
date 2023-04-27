@@ -1,4 +1,4 @@
-const { admin, ATTRIBUTES_TO_REMOVE, generateRandomNum } = require('./global')
+const { ATTRIBUTES_TO_REMOVE, generateUniqueRandomNumbers, localAdmin } = require('./global')
 const Magento2Api = require('magento2-api-wrapper')
 const keys = require('./keys')
 const https = require('https')
@@ -68,7 +68,7 @@ async function testProduct(sku) {
     const attributesToIgnore = ['attribute_set_id', 'updated_at', 'custom_attributes', 'extension_attributes', 'tier_prices']
     const differences = { sku }
     const encodedSku = encodeURIComponent(sku)
-    const localProduct = await admin.get(`products/${encodedSku}`)
+    const localProduct = await localAdmin.get(`products/${encodedSku}`)
     const liveProduct = await liveAdmin.get(`products/${(encodedSku)}`)
 
     differences.attributes = compareAttributes(liveProduct, localProduct, attributesToIgnore)
@@ -82,13 +82,11 @@ async function testProduct(sku) {
  * @param {Array.<object>} products - magento products
  * @returns {Array} differences
  */
-async function randomTests(products) {
+async function randomProductTests(products) {
     const numberOfTests = 10
-    const randomNumbers = []
+    const randomNumbers = generateUniqueRandomNumbers(products.length, numberOfTests)
     const results = []
-    for (let i = 0; i < numberOfTests; i++) {
-        randomNumbers.push(generateRandomNum(0, products.length))
-    }
+    console.log(randomNumbers)
 
     for (const index of randomNumbers) {
         results.push(await testProduct(products[index].sku))
@@ -97,5 +95,5 @@ async function randomTests(products) {
 }
 
 module.exports = {
-    randomTests
+    randomProductTests
 }
