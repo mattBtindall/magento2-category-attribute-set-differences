@@ -1,5 +1,5 @@
-const { admin, attributeSetIds } = require('../global')
-const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId, getCategoryImportAllProducts } = require('./getHelpers')
+const { attributeSetIds, localAdmin } = require('../global')
+const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId } = require('./getHelpers')
 
 /**
  *
@@ -12,7 +12,7 @@ const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId, ge
 async function addAttributesToSet(attributeSetId, attributeGroupId, attributeCodes, sortOrder = 0) {
     const attributeIds = []
     for (const attributeCode of attributeCodes) {
-        attributeIds.push(await admin.post('products/attribute-sets/attributes', {
+        attributeIds.push(await localAdmin.post('products/attribute-sets/attributes', {
             attributeSetId,
             attributeGroupId,
             attributeCode,
@@ -40,7 +40,7 @@ async function updateProduct(sku, updates) {
         "storeCode": "all"
     }
 
-    return admin.put(`products/${encodeURIComponent(sku)}`, data, config)
+    return localAdmin.put(`products/${encodeURIComponent(sku)}`, data, config)
 }
 
 /**
@@ -53,16 +53,6 @@ async function updateProductAttributeSet(sku, attributeSetId) {
     return updateProduct(sku, {
         "attribute_set_id": attributeSetId,
     })
-}
-
-async function updateImportAllProductsAttributeSet(categoryId, importAllId, attributeSetId) {
-    const importAllProducts = await getCategoryImportAllProducts(categoryId, importAllId)
-    const receipt = []
-    for (const product of importAllProducts) {
-        console.log(product.sku)
-        receipt.push(await updateProductAttributeSet(product.sku, attributeSetId))
-    }
-        return receipt
 }
 
 /**
@@ -93,8 +83,9 @@ async function removeAttributes(sku, attributeCodes) {
  * @param {Number} defaultAttributeSet - default attribute set id
  * @returns {Error|Number} throws error if attribute set cannot be create or attribute set id
  */
-async function createNewAttributeSet(name, category, attributeGroup, importAllId, defaultAttributeSet) {
-    const { attribute_set_id: attributeSetId } = await admin.post('products/attribute-sets', {
+async function createNewAttributeSet(name, defaultAttributeSet) {
+    console.log(`creating new attribute set called: ${name}`)
+    const { attribute_set_id: attributeSetId } = await localAdmin.post('products/attribute-sets', {
         'attributeSet': {
             'attribute_set_name': name,
             'sort_order': 0
@@ -103,22 +94,9 @@ async function createNewAttributeSet(name, category, attributeGroup, importAllId
     })
 
     if (!attributeSetId) {
-        return new Error('Failed to create attribute set')
+        console.log('Failed to create new attribute set')
     }
 
-    const receipt = []
-    const categoryId = typeof category === 'string' ? await getCategoryId(category) : category
-    const attributeGroupId = typeof attributeGroup === 'string' ? await getAttributeSetGroupId(attributeSetId, attributeGroup) : attributeGroup
-    const attrbiuteCodes = await getAttributeCodesFromProducts(categoryId, importAllId)
-
-    for (const code of attrbiuteCodes) {
-        receipt.push(await admin.post('products/attribute-sets/attributes', {
-            "attributeSetId": attributeSetId,
-            "attributeGroupId": attributeGroupId,
-            "attributeCode":  code,
-            "sortOrder": 0
-        }))
-    }
     return attributeSetId
 }
 // const attributeSetId = await createNewAttributeSet('Infection Control & Social Distancing', 'Infection Control & Social Distancing', 'Attributes', attributeSetIds.importAll, attributeSetIds.default)
@@ -127,5 +105,5 @@ module.exports = {
     addAttributesToSet,
     updateProductAttributeSet,
     removeAttributes,
-    updateImportAllProductsAttributeSet
+    createNewAttributeSet
 }
