@@ -21,13 +21,15 @@ function getWithFilter(endpoint, filters) {
 }
 
 /**
- * gets all attribute codes of an attribute set
+ * gets all attribute codes of an attribute set with an option to get custom attributes only
  * @param {Number} attributeSetId - the id of the attribute set
+ * @param {boolean} custom - deterimes whether to only get custom attributes
  * @returns {Promise} - argument contains attribute codes
  */
-async function getAttributesFromSet(attributeSetId) {
-    const attributeSetAttributes = await localAdmin.get(`products/attribute-sets/${attributeSetId}/attributes`)
-    return attributeSetAttributes.map(attribute => attribute.attribute_code)
+async function getAttributesFromSet(attributeSetId, custom = null) {
+    let attributes = await localAdmin.get(`products/attribute-sets/${attributeSetId}/attributes`)
+    attributes = custom ? attributes.filter(attr => attr.is_user_defined) : attributes
+    return attributes.map(attr => attr.attribute_code)
 }
 
 /**
