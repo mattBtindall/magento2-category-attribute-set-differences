@@ -120,6 +120,34 @@ async function getDifferentAttributeCodes(attribueSetId, importAllProducts) {
     return categoryAttributeCodes.filter(attributeCode => !attributeSetCodes.includes(attributeCode))
 }
 
+/**
+ * gets the unused attributes from the specified attribute set
+ * @param {String|Number} attributeSet - name of attribute set or the attribute set id
+ * @return {Array.<string>} attribute codes
+ */
+async function getUnUsedAttributes(attributeSet) {
+    let attributeSetId = typeof attributeSet === 'string' ? await getAttributeSetId(attributeSet) : attributeSet
+    const { items: products} = await getWithFilter('products', [
+        { 'field': 'attribute_set_id', 'value': attributeSetId, 'condition_type': 'eq' }
+    ])
+    let customAttributes = await getAttributesFromSet(attributeSetId, true)
+    let unusedAttributes
+
+    if (!products) return
+
+    products.forEach(product => {
+        const usedAttributes = product.custom_attributes.map(attr => attr.attribute_code)
+        unusedAttributes = customAttributes.filter(attr => !usedAttributes.includes(attr))
+    })
+
+    console.log(attributeSet)
+    console.log(`total custom attributes: ${customAttributes.length}`)
+    console.log(`unused custom attributes: ${unusedAttributes ? unusedAttributes.length : 0}`)
+    console.log('')
+
+    return unusedAttributes
+}
+
 module.exports = {
     getWithFilter,
     getAttributeSetGroupId,
@@ -128,5 +156,6 @@ module.exports = {
     getCategoryAttributeSetsProducts,
     getAttributeCodesFromProducts,
     getAttributesFromSet,
-    getDifferentAttributeCodes
+    getDifferentAttributeCodes,
+    getUnUsedAttributes
 }
