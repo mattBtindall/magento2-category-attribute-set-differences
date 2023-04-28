@@ -87,15 +87,12 @@ async function getCategoryAttributeSetsProducts(categoryId, attributeSetIds) {
 }
 
 /**
- * gets attribute codes from products that are part of the specified (tends to be importAll and defualt) attribute set from the specified category
- * @param {Number} categoryId - magento category id
- * @param {Object} attributeSetIds - attribute set ids with name e.g. {default: 4, importAll: 31}
+ * gets attribute codes from products
+ * @param {Array.<Object>} products - magento products
  * @returns {Promise} - containing array of attribute codes
  */
-async function getAttributeCodesFromProducts(categoryId, attribueSetIds) {
+async function getAttributeCodesFromProducts(products) {
     const attributeCodes = []
-    const products = await getCategoryAttributeSetsProducts(categoryId, attribueSetIds)
-
     for (const product of products) {
         product.custom_attributes.forEach(attribute => {
             if (!attributeCodes.includes(attribute.attribute_code)
@@ -111,13 +108,13 @@ async function getAttributeCodesFromProducts(categoryId, attribueSetIds) {
 /**
  * gets the attribute codes that are missing from the attribute set
  * @param {Number} attribueSetId - attribute set id
- * @param {Number} categoryId - category id
+ * @param {Array.<Object>} importAllProducts - magento products
  * @returns {Promise} containing an array of the differing attribute codes
  */
-async function getDifferentAttributeCodes(attribueSetId, categoryId, baseAttributeSetIds) {
-    if (!attribueSetId || !categoryId || !baseAttributeSetIds) return
+async function getDifferentAttributeCodes(attribueSetId, importAllProducts) {
+    if (!attribueSetId) return
     const attributeSetCodes = await getAttributesFromSet(attribueSetId)
-    const categoryAttributeCodes = await getAttributeCodesFromProducts(categoryId, baseAttributeSetIds)
+    const categoryAttributeCodes = await getAttributeCodesFromProducts(importAllProducts)
     return categoryAttributeCodes.filter(attributeCode => !attributeSetCodes.includes(attributeCode))
 }
 

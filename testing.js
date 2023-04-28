@@ -86,7 +86,6 @@ async function randomProductTests(products) {
     const numberOfTests = 10
     const randomNumbers = generateUniqueRandomNumbers(products.length, numberOfTests)
     const results = []
-    console.log(randomNumbers)
 
     for (const index of randomNumbers) {
         results.push(await testProduct(products[index].sku))
