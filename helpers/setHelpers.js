@@ -1,5 +1,4 @@
-const { attributeSetIds, localAdmin } = require('../global')
-const { getAttributeCodesFromProducts, getCategoryId, getAttributeSetGroupId } = require('./getHelpers')
+const { localAdmin } = require('../global')
 
 /**
  *
@@ -24,8 +23,8 @@ async function addAttributesToSet(attributeSetId, attributeGroupId, attributeCod
 
 /**
  * simple wrapper around the 'products/{sku}' endpoint
- * @param {Object} updates - attributes to update
  * @param {String} sku - product sku
+ * @param {Object} updates - attributes to update
  * @returns {Object} magento product
  */
 async function updateProduct(sku, updates) {
@@ -77,11 +76,8 @@ async function removeAttributes(sku, attributeCodes) {
 /**
  * creates a new attribute set based on products from importAll attribute set from specified category
  * @param {String} name - name of the new attribute set
- * @param {String|Number} category - either the name of category or the category id
- * @param {String|Number} attributeGroup - either the name of group or the group id
- * @param {Number} importAllId - import all attribute set id
  * @param {Number} defaultAttributeSet - default attribute set id
- * @returns {Error|Number} throws error if attribute set cannot be create or attribute set id
+ * @returns {Number} throws error if attribute set cannot be create or attribute set id
  */
 async function createNewAttributeSet(name, defaultAttributeSet) {
     console.log(`creating new attribute set called: ${name}`)
@@ -101,9 +97,37 @@ async function createNewAttributeSet(name, defaultAttributeSet) {
 }
 // const attributeSetId = await createNewAttributeSet('Infection Control & Social Distancing', 'Infection Control & Social Distancing', 'Attributes', attributeSetIds.importAll, attributeSetIds.default)
 
+async function removeAttributeFromSet(attributeCode, attributeSetId) {
+    return localAdmin.delete(`products/attribute-sets/${attributeSetId}/attributes/${encodeURIComponent(attributeCode)}`)
+}
+
+async function test() {
+    try {
+        const data = await removeAttributeFromSet('base_colour', 41)
+        console.log(data)
+    } catch (e) {
+        console.log(e.response.data)
+    }
+}
+// test()
+
+/**
+ * removes attributes from an attribute set
+ * @param {Array.<String>} attributeCodes - attribute codes
+ * @param {Number} attributeSetId - attribute set id
+ * @returns {void}
+ */
+async function removeAttributesFromSet(attributeCodes, attributeSetId) {
+    for (const attrCode of attributeCodes) {
+        const result = removeAttributeFromSet(attrCode, attributeSetId)
+        console.log(result)
+    }
+}
+
 module.exports = {
     addAttributesToSet,
     updateProductAttributeSet,
     removeAttributes,
-    createNewAttributeSet
+    createNewAttributeSet,
+    removeAttributesFromSet
 }

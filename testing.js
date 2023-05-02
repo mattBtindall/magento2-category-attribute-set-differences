@@ -107,7 +107,7 @@ async function checkAllAttributeSets(file) {
         getUnUsedAttributes(setName.attribute_set_name)
     }
 }
-checkAllAttributeSets('./all_attribute_sets.json')
+// checkAllAttributeSets('./all_attribute_sets.json')
 
 module.exports = {
     randomProductTests

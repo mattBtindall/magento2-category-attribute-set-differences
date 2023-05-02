@@ -147,6 +147,8 @@ async function getUnUsedAttributes(attributeSet) {
 
     return unusedAttributes
 }
+// getUnUsedAttributes('Bins Specifications')
+//     .then(data => console.log(data))
 
 module.exports = {
     getWithFilter,
