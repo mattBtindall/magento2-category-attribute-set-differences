@@ -130,10 +130,9 @@ async function getUnUsedAttributes(attributeSet) {
     const { items: products} = await getWithFilter('products', [
         { 'field': 'attribute_set_id', 'value': attributeSetId, 'condition_type': 'eq' }
     ])
+    if (!products) return
     let customAttributes = await getAttributesFromSet(attributeSetId, true)
     let unusedAttributes
-
-    if (!products) return
 
     products.forEach(product => {
         const usedAttributes = product.custom_attributes.map(attr => attr.attribute_code)
@@ -143,6 +142,7 @@ async function getUnUsedAttributes(attributeSet) {
     console.log(attributeSet)
     console.log(`total custom attributes: ${customAttributes.length}`)
     console.log(`unused custom attributes: ${unusedAttributes ? unusedAttributes.length : 0}`)
+    console.log(`number of products ${products.length}`)
     console.log('')
 
     return unusedAttributes

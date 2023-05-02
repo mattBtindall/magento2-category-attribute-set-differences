@@ -1,7 +1,9 @@
 const { ATTRIBUTES_TO_REMOVE, generateUniqueRandomNumbers, localAdmin } = require('./global')
+const { getUnUsedAttributes } = require('./helpers/getHelpers')
 const Magento2Api = require('magento2-api-wrapper')
 const keys = require('./keys')
 const https = require('https')
+const fs = require('fs')
 
 const liveAdmin = new Magento2Api({
     api: {
@@ -92,6 +94,20 @@ async function randomProductTests(products) {
     }
     return results
 }
+
+/**
+ * test function outputs the number of un-used attributes from the specified file
+ * @param {JSON} file - containing objects with a "attribute_set_name: value" key value pair e.g. {{ "attribute_set_name": "Benches and Picnic Tables" }, {"attribute_set_name": "Bins Specifications"}}
+ * @return {void}
+ */
+async function checkAllAttributeSets(file) {
+    const data = fs.readFileSync(file)
+    const attributeSetNames = JSON.parse(data)
+    for (const setName of attributeSetNames) {
+        getUnUsedAttributes(setName.attribute_set_name)
+    }
+}
+checkAllAttributeSets('./all_attribute_sets.json')
 
 module.exports = {
     randomProductTests
