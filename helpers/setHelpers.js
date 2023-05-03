@@ -119,8 +119,13 @@ async function test() {
  */
 async function removeAttributesFromSet(attributeCodes, attributeSetId) {
     for (const attrCode of attributeCodes) {
-        const result = removeAttributeFromSet(attrCode, attributeSetId)
-        console.log(result)
+        try {
+            const result = await removeAttributeFromSet(attrCode, attributeSetId)
+            console.log(`${attrCode}: ${result}`)
+        } catch (e) {
+            console.log(attrCode)
+            console.log(e.response.data)
+        }
     }
 }
 
