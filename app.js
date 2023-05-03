@@ -1,5 +1,5 @@
-const { getAttributeSetGroupId, getAttributeSetId, getCategoryId, getCategoryAttributeSetsProducts, getDifferentAttributeCodes, getWithFilter } = require('./helpers/getHelpers')
-const { addAttributesToSet, updateProductAttributeSet, createNewAttributeSet } = require('./helpers/setHelpers')
+const { getAttributeSetGroupId, getAttributeSetId, getCategoryId, getCategoryAttributeSetsProducts, getDifferentAttributeCodes, getWithFilter, getUnUsedAttributes } = require('./helpers/getHelpers')
+const { addAttributesToSet, updateProductAttributeSet, createNewAttributeSet, removeAttributesFromSet } = require('./helpers/setHelpers')
 const { attributeSetIds } = require('./global')
 const { randomProductTests } = require('./testing')
 
@@ -10,18 +10,21 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
     const categoryId = typeof category === 'string' ? await getCategoryId(category) : category
 
     const importAllProducts = await getCategoryAttributeSetsProducts(categoryId, attributeSetIds)
-    console.log(`Number of products: ${importAllProducts.length}`)
+    console.log(`Number of products to move into attribute set: ${importAllProducts.length}`)
 
     // gets attribute codes that are missing from the attribute set and then adds them to the set
     let attributeCodes = await getDifferentAttributeCodes(attributeSetId, importAllProducts)
-    console.log(attributeCodes)
-    console.log(`Codes length: ${attributeCodes.length}`)
+    console.log(`Attribute codes (${attributeCodes.length}) to add to set: ${attributeCodes}`)
     await addAttributesToSet(attributeSetId, attributeGroupId, attributeCodes, sortOrder)
 
     // adds the products that are in the importAll attributeSet to the attribute set
     for (const product of importAllProducts) {
         await updateProductAttributeSet(product.sku, attributeSetId)
     }
+
+    const unusedAttributes = await getUnUsedAttributes(attributeSetId)
+
+    removeAttributesFromSet(unusedAttributes, attributeSetId)
 
     // tests results
     randomProductTests(importAllProducts)
@@ -33,10 +36,10 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
 // addAttributes('Tank Specification', 'Attributes', 'Water Tanks') // 79 products # DONE
 // addAttributes('Bins Specifications', 'Attributes', 'Litter & Waste Bins') // 5522
 // addAttributes('Bins Specifications', 'Attributes', 'Recycling Bins ') // 7246
-// addAttributes('Bins Specifications', 'Attributes', 'Clinical Waste Bins') // 204
+// addAttributes('Bins Specifications', 'Attributes', 'Clinical Waste Bins') // 205
 // addAttributes('Belt & Rope Barriers' ,'Attributes', 'Queue Management') // a lot of these are in the infection control category so if you run that code first these won't be added to queue management
 // addAttributes('Infection Control & Social Distancing' ,'Attributes', 'Infection Control & Social Distancing') //
-// addAttributes('Equestrian' ,'Attributes', 'Equestrian') //
+addAttributes('Equestrian' ,'Attributes', 'Equestrian') //
 // addAttributes('Trucks & Trolleys' ,'Attributes', 'Trucks and Trolleys') // pallet trucks here will get added to this becuase they aren't in their own sets, need to avoid this
 // addAttributes('Spill Kits & Containment' ,'Attributes', 'Spill Kits & Containment') // pallet trucks here will get added to this becuase they aren't in their own sets, need to avoid this
     // .then(data => console.log(data))
