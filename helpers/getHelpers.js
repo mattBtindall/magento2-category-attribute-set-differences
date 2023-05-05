@@ -72,6 +72,7 @@ async function getCategoryId(categoryName) {
 
 /**
  * get all the products from the specified category that are in the specific attribute sets
+ * checks products for child products and adds them if they aren't already
  * @param {Number} categoryId - category id
  * @param {Object} attributeSetIds - attribute set ids with name e.g. {default: 4, importAll: 31}
  * @returns {Array} products
@@ -85,6 +86,27 @@ async function getCategoryAttributeSetsProducts(categoryId, attributeSetIds) {
         ])
         allProducts = allProducts.concat(products.items)
     }
+
+    // gets the child products that aren't included in the above
+    const productIds = allProducts.map(prod => prod.id)
+    const notIncludedProductIds = []
+    allProducts.forEach(product => {
+        if (product.extension_attributes.hasOwnProperty('configurable_product_links')) {
+            product.extension_attributes.configurable_product_links.forEach(childProd => {
+                if (!productIds.includes(childProd)) {
+                    notIncludedProductIds.push(childProd)
+                }
+            })
+        }
+    })
+
+    for (const id of notIncludedProductIds) {
+        const { items: product } = await getWithFilter('products', [
+            { 'field': 'entity_id', 'value': id, 'condition_type': 'eq'}
+        ])
+        allProducts.push(product[0])
+    }
+
     return allProducts
 }
 
@@ -132,20 +154,21 @@ async function getUnUsedAttributes(attributeSet) {
     ])
     if (!products) return
     let customAttributes = await getAttributesFromSet(attributeSetId, true)
-    let unusedAttributes
+    const originalLength = customAttributes.length
 
     products.forEach(product => {
         const usedAttributes = product.custom_attributes.map(attr => attr.attribute_code)
-        unusedAttributes = customAttributes.filter(attr => !usedAttributes.includes(attr))
+        // in here don't just check custom, also look at 'extension_Attrbiutes.configurable_product_options'
+        customAttributes = customAttributes.filter(attr => !usedAttributes.includes(attr))
     })
 
     console.log(attributeSet)
-    console.log(`total custom attributes: ${customAttributes.length}`)
-    console.log(`unused custom attributes: ${unusedAttributes ? unusedAttributes.length : 0}`)
+    console.log(`total custom attributes: ${originalLength}`)
+    console.log(`unused custom attributes: ${customAttributes ? customAttributes.length : 0}`)
     console.log(`number of products ${products.length}`)
     console.log('')
 
-    return unusedAttributes
+    return customAttributes
 }
 // getUnUsedAttributes('Bins Specifications')
 //     .then(data => console.log(data))
