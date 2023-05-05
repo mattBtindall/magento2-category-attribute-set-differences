@@ -109,6 +109,28 @@ async function checkAllAttributeSets(file) {
 }
 // checkAllAttributeSets('./all_attribute_sets.json')
 
+/**
+ * checks array for duplicates
+ * @param {Array} arr -
+ * @returns {Boolean} indicates whether array has duplicate values
+ */
+const hasDuplicates = (arr) => (new Set(arr).size) !== arr.length
+
+/**
+ * gets the items of an array that are duplicated
+ * @param {Array} arr - array of values
+ * @returns {Array} items that are duplicated
+ */
+function getDuplicates(arr) {
+    const duplicates = new Set()
+    arr.forEach(val => {
+        if (arr.indexOf(val) !== arr.lastIndexOf(val)) {
+            duplicates.add(val)
+        }
+    })
+    return Array.from(duplicates)
+}
+
 module.exports = {
     randomProductTests
 }
