@@ -71,6 +71,21 @@ async function getCategoryId(categoryName) {
 }
 
 /**
+ * gets the attribute codes from a products configurable_product_options
+ * needed as these options don't include the attribute code
+ * @param {Array.<object>} options - the product configurable options
+ * @returns {Array} containing the attribute codes
+ */
+async function getConfigurableOptionsAttributeCodes(options) {
+    const attributeCodes = []
+    for (attribute of options) {
+        const { attribute_code: attributeCode } = await localAdmin.get(`products/attributes/${attribute.attribute_id}`)
+        attributeCodes.push(attributeCode)
+    }
+    return attributeCodes
+}
+
+/**
  * get all the products from the specified category that are in the specific attribute sets
  * checks products for child products and adds them if they aren't already
  * @param {Number} categoryId - category id
@@ -156,11 +171,14 @@ async function getUnUsedAttributes(attributeSet) {
     let customAttributes = await getAttributesFromSet(attributeSetId, true)
     const originalLength = customAttributes.length
 
-    products.forEach(product => {
-        const usedAttributes = product.custom_attributes.map(attr => attr.attribute_code)
-        // in here don't just check custom, also look at 'extension_Attrbiutes.configurable_product_options'
+    for (const product of products) {
+        let usedAttributes = product.custom_attributes.map(attr => attr.attribute_code)
+        if (product.extension_attributes.hasOwnProperty('configurable_product_options')) {
+            const configOptionsAttributes = await getConfigurableOptionsAttributeCodes(product.extension_attributes.configurable_product_options)
+            usedAttributes = usedAttributes.concat(configOptionsAttributes)
+        }
         customAttributes = customAttributes.filter(attr => !usedAttributes.includes(attr))
-    })
+    }
 
     console.log(attributeSet)
     console.log(`total custom attributes: ${originalLength}`)
