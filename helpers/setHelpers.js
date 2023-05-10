@@ -1,4 +1,5 @@
 const { localAdmin } = require('../global')
+const { getWithFilter } = require('./getHelpers')
 
 /**
  *
@@ -121,13 +122,42 @@ async function removeAttributesFromSet(attributeCodes, attributeSetId) {
     for (const attrCode of attributeCodes) {
         try {
             const result = await removeAttributeFromSet(attrCode, attributeSetId)
-            console.log(`${attrCode}: ${result}`)
+            console.log(`${attrCode}: removed from attribute? ${result}`)
         } catch (e) {
             console.log(attrCode)
             console.log(e.response.data)
         }
     }
 }
+
+// if a products merchant feed id is null, sets the merchant feed id of the product to the same as the sku if the merchant feed id attribute is present
+// this is necessary as products that don't have a merhchant feed id set can't be saved!
+async function setMerchantFeedId() {
+    // const allProducts = await localAdmin.get('products')
+    const { items: products } = await getWithFilter('products', [
+        {'field': 'merchant_feed_product_id', 'condition_type': 'null'}
+    ])
+
+    console.log(`Number of products: ${products.length}`)
+    const failedUpdates = []
+    for (const product of products) {
+        try {
+            const data = await updateProduct(encodeURIComponent(product.sku), {
+                "custom_attributes": [{
+                    "attribute_code": "merchant_feed_product_id",
+                    "value": product.sku
+                }]
+            })
+        } catch (e) {
+            failedUpdates.push({
+                sku: product.sku,
+                msg: e.hasOwnProperty('response') ? e.response.data : e
+            })
+        }
+    }
+    console.log(`Number of merchant feed products not updated: ${failedUpdates.length}`)
+}
+// setMerchantFeedId()
 
 module.exports = {
     addAttributesToSet,
