@@ -50,9 +50,13 @@ async function updateProduct(sku, updates) {
  * @returns {Array} updated product
  */
 async function updateProductAttributeSet(sku, attributeSetId) {
-    return updateProduct(sku, {
-        "attribute_set_id": attributeSetId,
-    })
+    try {
+        await updateProduct(sku, {
+            "attribute_set_id": attributeSetId,
+        })
+    } catch (e) {
+        console.log(`Can't move product (sku) to attribute set because: ${e.response.data.message}`)
+    }
 }
 
 /**
