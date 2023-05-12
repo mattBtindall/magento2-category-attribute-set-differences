@@ -137,7 +137,6 @@ async function removeAttributesFromSet(attributeCodes, attributeSetId) {
 // if a products merchant feed id is null, sets the merchant feed id of the product to the same as the sku if the merchant feed id attribute is present
 // this is necessary as products that don't have a merhchant feed id set can't be saved!
 async function setMerchantFeedId() {
-    // const allProducts = await localAdmin.get('products')
     const { items: products } = await getWithFilter('products', [
         {'field': 'merchant_feed_product_id', 'condition_type': 'null'}
     ])

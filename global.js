@@ -32,7 +32,8 @@ function generateUniqueRandomNumbers(maxNumber, length) {
 
 const localAdmin = new Magento2Api({
     api: {
-        url: 'https://localhost',
+        // url: 'https://localhost',
+        url: 'https://magento-admin.kingfisherdirect.co.uk',
         consumerKey: keys.local.consumerKey,
         consumerSecret: keys.local.consumerSecret,
         accessToken: keys.local.accessToken,

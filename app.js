@@ -23,7 +23,6 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
     }
 
     const unusedAttributes = await getUnUsedAttributes(attributeSetId)
-
     removeAttributesFromSet(unusedAttributes, attributeSetId)
 
     // tests results
@@ -39,13 +38,12 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
 // addAttributes('Bins Specifications', 'Attributes', 'Clinical Waste Bins') // 205
 // addAttributes('Belt & Rope Barriers' ,'Attributes', 'Queue Management') // a lot of these are in the infection control category so if you run that code first these won't be added to queue management
 // addAttributes('Infection Control & Social Distancing' ,'Attributes', 'Infection Control & Social Distancing') //
-addAttributes('Equestrian' ,'Attributes', 'Equestrian') //
+// addAttributes('Equestrian' ,'Attributes', 'Equestrian') //
 // addAttributes('Trucks & Trolleys' ,'Attributes', 'Trucks and Trolleys') // pallet trucks here will get added to this becuase they aren't in their own sets, need to avoid this
 // addAttributes('Spill Kits & Containment' ,'Attributes', 'Spill Kits & Containment') // pallet trucks here will get added to this becuase they aren't in their own sets, need to avoid this
     // .then(data => console.log(data))
 
 // to do
-// remove unused attributes from set
 // output the results to a json file named the unix time
 // in this, list the attribute set that products were moved to
 // if the attribute set is new

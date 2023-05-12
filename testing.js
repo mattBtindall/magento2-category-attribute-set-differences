@@ -7,7 +7,8 @@ const fs = require('fs')
 
 const liveAdmin = new Magento2Api({
     api: {
-        url: 'https://magento-admin.kingfisherdirect.co.uk',
+        // url: 'https://magento-admin.kingfisherdirect.co.uk',
+        url: 'https://localhost',
         consumerKey: keys.live.consumerKey,
         consumerSecret: keys.live.consumerSecret,
         accessToken: keys.live.accessToken,
