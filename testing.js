@@ -1,5 +1,5 @@
-const { ATTRIBUTES_TO_REMOVE, generateUniqueRandomNumbers, localAdmin } = require('./global')
-const { getUnUsedAttributes } = require('./helpers/getHelpers')
+const { ATTRIBUTES_TO_REMOVE, generateUniqueRandomNumbers, localAdmin, attributeSetIds } = require('./global')
+const { getUnUsedAttributes, getWithFilter } = require('./helpers/getHelpers')
 const Magento2Api = require('magento2-api-wrapper')
 const keys = require('./keys')
 const https = require('https')
@@ -132,6 +132,31 @@ function getDuplicates(arr) {
     return Array.from(duplicates)
 }
 
+/**
+ * gets the total number of products in the attribute set
+ * @param {Object} magentoAdmin - magento2-api-wrapper instance
+ * @param {Number} attributeSetId - attribute set id
+ * @returns {String} defining the number of products in the attribute set
+ */
+async function getNumberOfProductFromAttribueSet(magentoAdmin, attributeSetId) {
+    // const products = await getWithFilter('products', [
+    //     { 'field': 'attribute_set_id', 'value': attributeSetId, 'condition_type': 'eq' }
+    // ])
+    const products = await magentoAdmin.get('products', {
+        params: {
+            searchCriteria: {
+            currentPage: 1,
+            pageSize: 500,
+            'filter_groups': [{'filters': [{ 'field': 'attribute_set_id', 'value': attributeSetId, 'condition_type': 'eq' }]}]
+            }
+        }
+    })
+    return `${attributeSetId}: ${products.total_count}`
+}
+getNumberOfProductFromAttribueSet(liveAdmin, attributeSetIds.default)
+    .then(data => console.log(data))
+
 module.exports = {
-    randomProductTests
+    randomProductTests,
+    liveAdmin
 }
