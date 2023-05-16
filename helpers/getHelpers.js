@@ -10,6 +10,8 @@ function getWithFilter(endpoint, filters) {
     return localAdmin.get(endpoint, {
         params: {
             searchCriteria: {
+            currentPage: 1,
+            pageSize: 500,
             'filter_groups': [
                     {
                         'filters': filters
@@ -95,6 +97,7 @@ async function getConfigurableOptionsAttributeCodes(options) {
 async function getCategoryAttributeSetsProducts(categoryId, attributeSetIds) {
     let allProducts = []
     for (const attribueSetId of Object.values(attributeSetIds)) {
+        console.log(`Getting ${attribueSetId} products`)
         const products = await getWithFilter('products', [
             { 'field': 'attribute_set_id', 'value': attribueSetId, 'condition_type': 'eq' },
             { 'field': 'category_id', 'value':  categoryId, 'condition_type': 'eq'}
