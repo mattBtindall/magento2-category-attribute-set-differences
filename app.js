@@ -41,10 +41,33 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
 // addAttributes('Equestrian' ,'Attributes', 'Equestrian') //
 // addAttributes('Trucks & Trolleys' ,'Attributes', 'Trucks and Trolleys') // pallet trucks here will get added to this becuase they aren't in their own sets, need to avoid this
 // addAttributes('Spill Kits & Containment' ,'Attributes', 'Spill Kits & Containment') // pallet trucks here will get added to this becuase they aren't in their own sets, need to avoid this
-    // .then(data => console.log(data))
+// addAttributes('Pallet Truck Specification', 'Attributes', 'Pallet Trucks')
+// addAttributes('Mortar Tub Specification', 'Attributes', 'Mortar Tubs')
+// addAttributes('Oil Tanks', 'Attributes', 'Oil Tanks')
+// addAttributes('Grit Bin Specification', 'Attributes', 'Grit Bins')
+// addAttributes('PPE', 'Attributes', 'PPE')
+// addAttributes('Rubbish Chutes', 'Attributes', 'Rubbish & Rubble Chutes')
 
 // to do
-// output the results to a json file named the unix time
-// in this, list the attribute set that products were moved to
-// if the attribute set is new
-// maybe add in a check to see if there are in a certain category, if they are then don't include these products
+// addAttributes('Pump Specification', 'Attributes', 'Building & Construction Pumps')
+// addAttributes('Barriers & Railings', 'Attributes', 'Safety Barriers')
+// addAttributes('Mirrors', 'Attributes', 'Traffic & Safety Mirrors')
+// addAttributes('Bins Specifications', 'Attributes', 'Park Litter Bins ')
+// addAttributes('Bins Specifications', 'Attributes', 'Dog Waste Bins ')
+// addAttributes('Bollard Specification', 'Attributes', 'Bollards')
+// addAttributes('Cycle Storage & Security', 'Attributes', 'Cycle Storage and Security')
+// addAttributes('Cycle Storage & Security', 'Attributes', 'Cycle Shelters')
+// addAttributes('Signage', 'Attributes', 'Signage')
+// addAttributes('Barriers & Railings', 'Attributes', 'Railings')
+// addAttributes('Steps, Ladders & Platforms', 'Attributes', 'Steps & Ladders')
+// addAttributes('Cabinets and Lockers', 'Attributes', 'Lockers')
+// addAttributes('Shelving & Racking', 'Attributes', 'Shelving & Racking')
+// addAttributes('Shelving & Racking', 'Attributes', 'Garage Shelving')
+// addAttributes('Traffic Barriers', 'Attributes', 'Traffic Barriers')
+// addAttributes('Aggregates', 'Attributes', 'Aggregates')
+// addAttributes('Ground Protection and Matting Specification', 'Attributes', 'Anti Fatigue Mats & Matting')
+// addAttributes('Ground Protection and Matting Specification', 'Attributes', 'Ground Protection Mats')
+// addAttributes('Pump Specification', 'Attributes', 'Pumps')
+// addAttributes('Impact Protection', 'Attributes', 'Impact Guards')
+// addAttributes('Impact Protection', 'Attributes', 'Impact Protection')
+// addAttributes('', 'Attributes', '')
