@@ -153,8 +153,8 @@ async function getNumberOfProductFromAttribueSet(magentoAdmin, attributeSetId) {
     })
     return `${attributeSetId}: ${products.total_count}`
 }
-getNumberOfProductFromAttribueSet(liveAdmin, attributeSetIds.default)
-    .then(data => console.log(data))
+// getNumberOfProductFromAttribueSet(localAdmin, attributeSetIds.default)
+//     .then(data => console.log(data))
 
 module.exports = {
     randomProductTests,

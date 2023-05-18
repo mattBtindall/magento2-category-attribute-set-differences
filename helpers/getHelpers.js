@@ -10,8 +10,8 @@ function getWithFilter(endpoint, filters) {
     return localAdmin.get(endpoint, {
         params: {
             searchCriteria: {
-            currentPage: 1,
-            pageSize: 500,
+            // currentPage: 1,
+            // pageSize: 500,
             'filter_groups': [
                     {
                         'filters': filters
@@ -186,7 +186,7 @@ async function getUnUsedAttributes(attributeSet) {
     console.log(attributeSet)
     console.log(`total custom attributes: ${originalLength}`)
     console.log(`unused custom attributes: ${customAttributes ? customAttributes.length : 0}`)
-    console.log(`number of products ${products.length}`)
+    console.log(`number of products ${products.length} on the ${attributeSetId} set`)
     console.log('')
 
     return customAttributes

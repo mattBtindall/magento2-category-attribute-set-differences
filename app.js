@@ -26,8 +26,8 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
     removeAttributesFromSet(unusedAttributes, attributeSetId)
 
     // tests results
-    randomProductTests(importAllProducts)
-        .then(data => console.log(data))
+    // randomProductTests(importAllProducts)
+    //     .then(data => console.log(data))
 }
 // addAttributes('Bins Specifications', 'Attributes', 'Wheelie Bins ') // 800 products
 // addAttributes('Benches and Picnic Tables', 'Attributes', 'Seating') // 1000 products also need to change name of set to 'Seating, Benches and Picnic Tables' # DONE
@@ -49,25 +49,24 @@ async function addAttributes(attributeSet,  attributeGroup, category, sortOrder 
 // addAttributes('Rubbish Chutes', 'Attributes', 'Rubbish & Rubble Chutes')
 
 // to do
-// addAttributes('Pump Specification', 'Attributes', 'Building & Construction Pumps')
-// addAttributes('Barriers & Railings', 'Attributes', 'Safety Barriers')
-// addAttributes('Mirrors', 'Attributes', 'Traffic & Safety Mirrors')
-// addAttributes('Bins Specifications', 'Attributes', 'Park Litter Bins ')
-// addAttributes('Bins Specifications', 'Attributes', 'Dog Waste Bins ')
-// addAttributes('Bollard Specification', 'Attributes', 'Bollards')
-// addAttributes('Cycle Storage & Security', 'Attributes', 'Cycle Storage and Security')
-// addAttributes('Cycle Storage & Security', 'Attributes', 'Cycle Shelters')
-// addAttributes('Signage', 'Attributes', 'Signage')
-// addAttributes('Barriers & Railings', 'Attributes', 'Railings')
-// addAttributes('Steps, Ladders & Platforms', 'Attributes', 'Steps & Ladders')
-// addAttributes('Cabinets and Lockers', 'Attributes', 'Lockers')
-// addAttributes('Shelving & Racking', 'Attributes', 'Shelving & Racking')
-// addAttributes('Shelving & Racking', 'Attributes', 'Garage Shelving')
-// addAttributes('Traffic Barriers', 'Attributes', 'Traffic Barriers')
-// addAttributes('Aggregates', 'Attributes', 'Aggregates')
-// addAttributes('Ground Protection and Matting Specification', 'Attributes', 'Anti Fatigue Mats & Matting')
-// addAttributes('Ground Protection and Matting Specification', 'Attributes', 'Ground Protection Mats')
-// addAttributes('Pump Specification', 'Attributes', 'Pumps')
-// addAttributes('Impact Protection', 'Attributes', 'Impact Guards')
-// addAttributes('Impact Protection', 'Attributes', 'Impact Protection')
+// addAttributes('Pump Specification', 'Attributes', 'Building & Construction Pumps') # DONE
+// addAttributes('Barriers & Railings', 'Attributes', 'Safety Barriers') # DONE
+// addAttributes('Mirrors', 'Attributes', 'Traffic & Safety Mirrors') # DONE
+// addAttributes('Bins Specifications', 'Attributes', 'Park Litter Bins ') # DONE
+// addAttributes('Bins Specifications', 'Attributes', 'Dog Waste Bins ') # DONE
+// addAttributes('Bollard Specification', 'Attributes', 'Bollards') # DONE
+// addAttributes('Cycle Storage & Security', 'Attributes', 'Cycle Storage and Security') # DONE
+// addAttributes('Cycle Storage & Security', 'Attributes', 'Cycle Shelters') # DONE
+// addAttributes('Signage', 'Attributes', 'Signage') # DONE
+// addAttributes('Barriers & Railings', 'Attributes', 'Railings') # DONE
+// addAttributes('Steps, Ladders & Platforms', 'Attributes', 'Steps & Ladders') # DONE
+// addAttributes('Cabinets and Lockers', 'Attributes', 'Lockers') # DONE
+// addAttributes('Shelving & Racking', 'Attributes', 'Shelving & Racking') # DONE
+// addAttributes('Shelving & Racking', 'Attributes', 'Garage Shelving') # DONE
+// addAttributes('Traffic Barriers', 'Attributes', 'Traffic Barriers') # DONE
+// addAttributes('Aggregates', 'Attributes', 'Aggregates') # DONE
+// addAttributes('Ground Protection and Matting Specification', 'Attributes', 'Anti Fatigue Mats & Matting') # DONE
+// addAttributes('Ground Protection and Matting Specification', 'Attributes', 'Ground Protection Mats') # DONE
+// addAttributes('Pump Specification', 'Attributes', 'Pumps') # DONE
+// addAttributes('Impact Protection', 'Attributes', 'Impact Guards') # DONE
 // addAttributes('', 'Attributes', '')
